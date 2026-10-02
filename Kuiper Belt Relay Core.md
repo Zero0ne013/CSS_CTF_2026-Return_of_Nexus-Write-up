@@ -1,6 +1,7 @@
 ## Assignment
 
 Category: PWN
+
 Difficulty: Beginner
 
 The Relay rebooted an old diagnostic process — it just echoes back whatever you send it. Simple by design.
