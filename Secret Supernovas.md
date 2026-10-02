@@ -1,6 +1,7 @@
 ## Assignment
 
 Category: Web
+
 Difficulty: Not specified
 
 This is just a list of stars. Nothing else to see here...
