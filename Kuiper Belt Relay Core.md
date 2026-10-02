@@ -56,17 +56,18 @@ By reading the code, it is clear that the `gets(buffer)` function is vulnerable 
 Since we don't have the compiled binary from the server, we can assume the challenge is compiled without stack protection (canaries) and without PIE (Position Independent Executable), meaning the memory addresses are static. I compiled the source locally to analyze it:
 
 `gcc echo.c -o /tmp/echo -fno-stack-protector -no-pie`
- ![[Pasted image 20261001211712.png]]
+
+<img width="830" height="85" alt="Pasted image 20261001211712" src="https://github.com/user-attachments/assets/b840dcea-8540-4150-bd7c-d6da9149c25b" />
 
 We see that gets is not supported so we will run it as following.
 
-![[Pasted image 20261001211724.png]]
+<img width="695" height="89" alt="Pasted image 20261001211724" src="https://github.com/user-attachments/assets/9a8e9f8c-8d06-4218-907f-6fc61e9bcc47" />
 
 _(Note: `gets` is dangerous and will trigger a compiler warning, which we can ignore here.)_
 
 Next, I needed to find the address of the `win` function and calculate the required offset to overwrite the return address (RIP). To do this, I run the following command.
 
-![[Pasted image 20261001211948.png]]
+<img width="561" height="30" alt="Pasted image 20261001211948" src="https://github.com/user-attachments/assets/47957eab-9d8b-4410-8a46-42b1c4c290e7" />
 
 Now we need to know ho much we can override the stack. To do this we need to see the main a `vuln` function. To do this, I disassembled the binary using `objdump`.
 
@@ -74,7 +75,7 @@ Now we need to know ho much we can override the stack. To do this we need to see
 
 Output:
 
-![[Pasted image 20261001212707.png]]
+<img width="813" height="591" alt="Pasted image 20261001212707" src="https://github.com/user-attachments/assets/d5e82466-869b-4d25-9501-15988447386c" />
 
 In the disassembly of the `vuln` function, we can see how the stack frame is constructed. First, when the function is called, the return address (`RIP`) is pushed onto the stack. Next, the old base pointer is saved (`push %rbp`, 8 bytes). Finally, `0x40` (64 bytes) of space is allocated for our buffer (`sub $0x40, %rsp`).
 
@@ -103,7 +104,7 @@ p.interactive()
 
 Output:
 
-![[Pasted image 20261001213811.png]]
+<img width="874" height="239" alt="Pasted image 20261001213811" src="https://github.com/user-attachments/assets/a1355f20-5bfb-4f1a-af5b-330dc82c13c5" />
 
 However, executing this against the remote server did not work. The program crashed, confirming that the overflow was successful, but we didn't jump to the correct function. This probably happens because the remote server uses  different function addresses.
 
@@ -159,6 +160,6 @@ with ThreadPoolExecutor(max_workers=20) as pool:
 
 Output:
 
-![[Pasted image 20261001214411.png]]
+<img width="808" height="437" alt="Pasted image 20261001214411" src="https://github.com/user-attachments/assets/249904ef-bb59-47a9-9766-32cd511350cf" />
 
 BINGO! The script successfully found the correct remote address for the `win` function and retrieved the flag.
