@@ -1,6 +1,7 @@
 ## Assignment
 
 Category: Web
+
 Difficulty: Not specified
 
 [Michael Dalton](https://michaeldalton.au)
